@@ -10,7 +10,7 @@ import (
 	"github.com/google/go-github/v53/github"
 )
 
-type IterateReleaseFunc func(commit *github.RepositoryRelease) (bool, error)
+type IterateReleaseFunc func(release *github.RepositoryRelease) (bool, error)
 
 func IterateRepoReleases(client *github.Client, ctx context.Context, owner string, repo string, opts *github.ListOptions, f IterateReleaseFunc) error {
 	if opts == nil {
@@ -42,35 +42,3 @@ func IterateRepoReleases(client *github.Client, ctx context.Context, owner strin
 	return nil
 }
 
-type IterateReleaseFunc func(commit *github.RepositoryRelease) (bool, error)
-
-// TODO Same as above
-func IterateRepositoryReleases(ctx context.Context, client *github.Client, owner string, repo string, opts *github.ListOptions, f IterateReleaseFunc) error {
-	if opts == nil {
-		opts = &github.ListOptions{}
-	}
-
-	for {
-		releases, res, err := client.Repositories.ListReleases(ctx, owner, repo, opts)
-		if err != nil {
-			return err
-		}
-
-		for _, release := range releases {
-			cont, err := f(release)
-			if err != nil {
-				return err
-			}
-			if !cont {
-				return nil
-			}
-		}
-
-		if res.NextPage == 0 {
-			break
-		}
-
-		opts.Page = res.NextPage
-	}
-	return nil
-}
