@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/google/go-github/v47/github"
+	"github.com/google/go-github/v53/github"
 )
 
 type IterateWorkflowRunsFunc func(run *github.WorkflowRun) (bool, error)
